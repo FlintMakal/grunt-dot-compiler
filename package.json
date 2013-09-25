@@ -36,7 +36,8 @@
   "dependencies": {
     "dot": "~1.0.1",
     "findup-sync": "~0.1.2",
-    "requirejs": "~2.1.5"
+    "requirejs": "~2.1.5",
+    "cheerio": "~0.12.2"
   },
   "devDependencies": {
     "grunt": "~0.4",
