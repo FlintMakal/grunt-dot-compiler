@@ -17,6 +17,7 @@
   var path    = require('path'),
       fs      = require('fs'),
       cleaner = /^\s+|\s+$|[\r\n]+/gm,
+      cheerio = require('cheerio'),
       doT     = require('dot');
 
   var gruntRoot = path.dirname(grunt.file.findup('Gruntfile.js')) + '/';
@@ -133,9 +134,13 @@
         .replace(/'/g, "\\'")
         .replace(/\/\*.*?\*\//gm,'')
 
-      var compile = opt.prefix + '\'' + contents + '\', undefined, defs' + opt.suffix + ';' + grunt.util.linefeed;
-      compile = eval(compile);
-      js += '  ' + opt.variable + "['" + key + "']=" + compile + ';' + grunt.util.linefeed;
+      // iterate over all the template tag in the file and put their id as the function name (key)
+      $ = cheerio.load(contents);
+      $('template').each(function (index, element) {
+        var compile = opt.prefix + '\'' + $(element).html() + '\', undefined, defs' + opt.suffix + ';' + grunt.util.linefeed;
+        compile = eval(compile);
+        js += '  ' + opt.variable + "['" + $(element).attr('id') + "']=" + compile + ';' + grunt.util.linefeed;
+      });
     });
 
 
