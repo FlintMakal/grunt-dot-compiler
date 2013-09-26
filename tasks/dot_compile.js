@@ -7,7 +7,6 @@
  */
 
  module.exports = function(grunt) {
-
   "use strict";
 
   grunt.util = grunt.util || grunt.utils;
@@ -23,14 +22,17 @@
   var gruntRoot = path.dirname(grunt.file.findup('Gruntfile.js')) + '/';
 
   grunt.registerMultiTask('dot', 'prepares and combines any type of template into a script include', function() {
-    // grap the filepattern
-    var files = grunt.file.expand({filter: 'isFile'}, this.files[0].src);
-    // create the hogan include
-    var src = GruntDotCompiler.compileTemplates(files, this.data.options);
-    // write the new file
-    grunt.file.write(this.files[0].dest, src);
-    // log our success
-    grunt.log.writeln('File "' + this.files[0].dest + '" created.');
+    var self = this;
+    this.files.forEach(function(file) {
+      // grap the filepattern
+      var template = grunt.file.expand({filter: 'isFile'}, file.src);
+      // create the hogan include
+      var src = GruntDotCompiler.compileTemplates(template, self.data.options);
+      // write the new file
+      grunt.file.write(file.dest, src);
+      // log our success
+      grunt.log.writeln('File "' + file.dest + '" created.');
+    });
   });
 
   var GruntDotCompiler = {};
@@ -135,7 +137,7 @@
         .replace(/\/\*.*?\*\//gm,'')
 
       // iterate over all the template tag in the file and put their id as the function name (key)
-      $ = cheerio.load(contents);
+      var $ = cheerio.load(contents);
       $('template').each(function (index, element) {
         var compile = opt.prefix + '\'' + $(element).html() + '\', undefined, defs' + opt.suffix + ';' + grunt.util.linefeed;
         compile = eval(compile);
