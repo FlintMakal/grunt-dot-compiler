@@ -139,7 +139,7 @@
       // iterate over all the template tag in the file and put their id as the function name (key)
       var $ = cheerio.load(contents);
       $('template').each(function (index, element) {
-        var compile = opt.prefix + '\'' + $(element).html() + '\', undefined, defs' + opt.suffix + ';' + grunt.util.linefeed;
+        var compile = opt.prefix + '\'' + $(element).html().replace(/&apos;/g, "'") + '\', undefined, defs' + opt.suffix + ';' + grunt.util.linefeed;
         compile = eval(compile);
         js += '  ' + opt.variable + "['" + $(element).attr('id') + "']=" + compile + ';' + grunt.util.linefeed;
       });
