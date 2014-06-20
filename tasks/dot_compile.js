@@ -98,17 +98,19 @@
     if(opt.requirejs) {
       js += 'define(function() {' + grunt.util.linefeed;
     }
-
-    // Defining encodeHTML method for the templates
-    js += 'function encodeHTMLSource() {';
-    js += 'var encodeHTMLRules = { "&": "&#38;", "<": "&#60;", ">": "&#62;", \'"\': \'&#34;\', "\'": \'&#39;\', "/": \'&#47;\' },';
-    js += 'matchHTML = /&(?!#?\w+;)|<|>|"|\'|\\//g;';
-    js += 'return function() {';
-    js += 'return this ? this.replace(matchHTML, function(m) {return encodeHTMLRules[m] || m;}) : this;';
-    js += '};';
-    js += '};' + grunt.util.linefeed;
-
-    js += '  String.prototype.encodeHTML=encodeHTMLSource();' + grunt.util.linefeed;
+    
+    if(opt.selfcontained) {
+      // Defining encodeHTML method for the templates
+      js += 'function encodeHTMLSource() {';
+      js += 'var encodeHTMLRules = { "&": "&#38;", "<": "&#60;", ">": "&#62;", \'"\': \'&#34;\', "\'": \'&#39;\', "/": \'&#47;\' },';
+      js += 'matchHTML = /&(?!#?\w+;)|<|>|"|\'|\\//g;';
+      js += 'return function() {';
+      js += 'return this ? this.replace(matchHTML, function(m) {return encodeHTMLRules[m] || m;}) : this;';
+      js += '};';
+      js += '};' + grunt.util.linefeed;
+  
+      js += '  String.prototype.encodeHTML=encodeHTMLSource();' + grunt.util.linefeed;
+    }
 
     js += cutVariables(opt.variable);
 
